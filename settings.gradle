@@ -1,0 +1,2 @@
+rootProject.name = "Notes Q Keeper"
+include ':app'
