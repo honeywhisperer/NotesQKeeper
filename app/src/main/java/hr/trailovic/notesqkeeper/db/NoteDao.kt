@@ -1,5 +1,6 @@
 package hr.trailovic.notesqkeeper.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import hr.trailovic.notesqkeeper.model.Note
 
@@ -18,5 +19,5 @@ interface NoteDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM Note")
-    suspend fun getAll()
+    fun getAll(): LiveData<List<Note>>
 }
