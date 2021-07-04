@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Notes Q Keeper</string>
+    <string name="create_new_task">Create New Task</string>
+    <string name="remove_selected_tasks">Remove Selected Tasks</string>
+    <string name="title">Title</string>
+    <string name="save">Save</string>
 </resources>
