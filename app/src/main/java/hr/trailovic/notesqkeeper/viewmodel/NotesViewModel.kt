@@ -1,9 +1,12 @@
 package hr.trailovic.notesqkeeper.viewmodel
 
 import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.trailovic.notesqkeeper.model.Note
 import hr.trailovic.notesqkeeper.model.NoteSelectable
+import hr.trailovic.notesqkeeper.model.OneTimeEvent
+import hr.trailovic.notesqkeeper.model.toOneTimeEvent
 import hr.trailovic.notesqkeeper.repo.NotesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,12 +18,13 @@ class NotesViewModel @Inject constructor(private val repo: NotesRepository) : Vi
 //    val allNotesLD: LiveData<List<NoteSelectable>> = _allNotesMLD
 
     //  <<< Feed Main Activity with data
-    private val _notesFromDb : LiveData<List<Note>>
+    private val _notesFromDb: LiveData<List<Note>>
         get() {//todo: fix
             return repo.getAll()
         }
 
     private var _selectedNotes = MutableLiveData<Set<Note>>()
+
     private var _merged = MediatorLiveData<List<NoteSelectable>>()
 
     val notesLD: LiveData<List<NoteSelectable>> = _merged
@@ -30,6 +34,11 @@ class NotesViewModel @Inject constructor(private val repo: NotesRepository) : Vi
     private var _addButtonVisible = MutableLiveData<Boolean>(_selectedNotes.value.isNullOrEmpty())
     val addButtonVisible: LiveData<Boolean> = _addButtonVisible
     // >>> Control switching between Add and Delete buttons visibilities
+
+    // <<< Open in AddActivity for detailed view / editing
+    private var _noteToEdit = MutableLiveData<OneTimeEvent<Note>>()
+    val noteToEdit: LiveData<OneTimeEvent<Note>> = _noteToEdit
+    // >>> Open in AddActivity for detailed view / editing
 
     init {
 //        getAll()
@@ -64,18 +73,20 @@ class NotesViewModel @Inject constructor(private val repo: NotesRepository) : Vi
 //    }
 
 
-    /*If set of selected notes is empty, show the current note in AddActivity.
+    /**If set of selected notes is empty, show the current note in AddActivity.
     Otherwise, add or remove it from the selection.*/
     fun shortClick(note: NoteSelectable) {
         if (_selectedNotes.value.isNullOrEmpty()) {
-            // open the note in another activity
+            // todo: open the note in another activity, todo: test
+            _noteToEdit.postValue(note.note.toOneTimeEvent())
+
         } else {
             changeIsSelectedStatus(note.note, _selectedNotes)
         }
     }
 
 
-    /*If no note is selected, add the current one to the selection;
+    /**If no note is selected, add the current one to the selection;
     after this, every note that is shortClick-ed will be added or removed from the list of selected items.
     (long clicks are the same as short)
     Selected items can be deleted - when set of selected items is not empty, Add button disappears and
@@ -85,6 +96,8 @@ class NotesViewModel @Inject constructor(private val repo: NotesRepository) : Vi
         if (_selectedNotes.value.isNullOrEmpty()) {
             changeIsSelectedStatus(note.note, _selectedNotes)
         } else {
+            // noop
+
             // todo
             // ignore this option, for now;
             // come up with some useful functionality later.
@@ -104,6 +117,10 @@ class NotesViewModel @Inject constructor(private val repo: NotesRepository) : Vi
             selection.postValue(setOf(note))
         }
     }
+
+    /**
+     *
+     **/
 
     fun deleteSelected() {
         viewModelScope.launch {

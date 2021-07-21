@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.notesqkeeper.base.BaseActivity
 import hr.trailovic.notesqkeeper.databinding.ActivityAddBinding
+import hr.trailovic.notesqkeeper.model.Note
 import hr.trailovic.notesqkeeper.viewmodel.AddViewModel
 
 @AndroidEntryPoint
@@ -14,12 +15,23 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
 
     private val viewModel: AddViewModel by viewModels()
 
+    private var noteToShow: Note? = null
+
     override fun getBinding(): ActivityAddBinding = ActivityAddBinding.inflate(layoutInflater)
 
     override fun setup() {
+        extractNote()
         setListeners()
         setBind()
 
+    }
+
+    private fun extractNote() {
+        noteToShow = intent.getParcelableExtra<Note>(ARG_EXTRA_NOTE)
+        noteToShow?.let {
+            binding.etTitle.setText(it.title)
+            binding.etBody.setText(it.body)
+        }
     }
 
     private fun setBind() {
@@ -51,7 +63,12 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
     }
 
     companion object {
+        private const val ARG_EXTRA_NOTE = "extra.note"
         fun newIntent(context: Context) = Intent(context, AddActivity::class.java)
+        fun newIntent(context: Context, note: Note) =
+            Intent(context, AddActivity::class.java).apply {
+                putExtra(ARG_EXTRA_NOTE, note)
+            }
     }
 
 

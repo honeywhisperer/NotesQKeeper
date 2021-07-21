@@ -8,6 +8,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.notesqkeeper.base.BaseActivity
 import hr.trailovic.notesqkeeper.databinding.ActivityMainBinding
 import hr.trailovic.notesqkeeper.model.NoteSelectable
+import hr.trailovic.notesqkeeper.model.consume
 import hr.trailovic.notesqkeeper.view.add.AddActivity
 import hr.trailovic.notesqkeeper.viewmodel.NotesViewModel
 
@@ -38,12 +39,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun setBind() {
         viewModelNotes.notesLD.observe(this) {
             adapter.setItems(it)
-            Toast.makeText(this, it.joinToString("\n"), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, it.joinToString("\n"), Toast.LENGTH_SHORT).show()
         }
 
         viewModelNotes.addButtonVisible.observe(this) {
             binding.fabAddTask.visibility = setVisibility(it)
             binding.fabDeleteSelection.visibility = setVisibility(it.not())
+        }
+
+        viewModelNotes.noteToEdit.observe(this) { oneTimeEventNote ->
+            oneTimeEventNote.consume { note ->
+                val newIntent = AddActivity.newIntent(this, note)
+                startActivity(newIntent)
+            }
         }
     }
 
