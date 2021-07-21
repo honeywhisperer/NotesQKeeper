@@ -10,7 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesQKeeper">
-        <activity android:name=".view.add.AddActivity"></activity>
+        <activity
+            android:name=".view.add.AddActivity"
+            android:parentActivityName=".view.main.MainActivity" />
         <activity android:name=".view.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
