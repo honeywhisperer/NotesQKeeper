@@ -2,6 +2,8 @@ package hr.trailovic.notesqkeeper.view.add
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +24,23 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
     override fun setup() {
         extractNote()
         setListeners()
-        setBind()
+        setButtonsVisibility()
+    }
 
+    private fun setButtonsVisibility() {
+        //todo
+        setVisibilityForButton(binding.btnCancel, View.VISIBLE)
+        noteToShow?.let {
+            // option - edit note
+            setVisibilityForButton(binding.btnSave, View.GONE)
+            setVisibilityForButton(binding.btnUpdate, View.VISIBLE)
+            setVisibilityForButton(binding.btnDelete, View.VISIBLE)
+        } ?: run {
+            // option - add new note
+            setVisibilityForButton(binding.btnSave, View.VISIBLE)
+            setVisibilityForButton(binding.btnUpdate, View.GONE)
+            setVisibilityForButton(binding.btnDelete, View.GONE)
+        }
     }
 
     private fun extractNote() {
@@ -31,13 +48,7 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
         noteToShow?.let {
             binding.etTitle.setText(it.title)
             binding.etBody.setText(it.body)
-        }
-    }
-
-    private fun setBind() {
-        viewModel.noteToLoad.observe(this) {
-            binding.etTitle.setText(it.note.title)
-            binding.etBody.setText(it.note.body)
+            viewModel.loadedNote(it)
         }
     }
 
@@ -50,6 +61,24 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
                 finish()
             }
         }
+
+        binding.btnUpdate.setOnClickListener {
+            val titleIsOk = checkIfTextFieldIsNotBlank(binding.etTitle)
+            val bodyIsOk = checkIfTextFieldIsNotBlank(binding.etBody)
+            if (titleIsOk && bodyIsOk) {
+                viewModel.update(binding.etTitle.text.toString(), binding.etBody.text.toString())
+                finish()
+            }
+        }
+
+        binding.btnCancel.setOnClickListener {
+            finish()
+        }
+
+        binding.btnDelete.setOnClickListener {
+            viewModel.delete()
+            finish()
+        }
     }
 
     private fun checkIfTextFieldIsNotBlank(field: EditText): Boolean {
@@ -57,9 +86,12 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
             field.error = "Required"
             false
         } else {
-//            field.error = ""
             true
         }
+    }
+
+    private fun setVisibilityForButton(button: Button, visibility: Int) {
+        button.visibility = visibility
     }
 
     companion object {
@@ -70,6 +102,4 @@ class AddActivity : BaseActivity<ActivityAddBinding>() {
                 putExtra(ARG_EXTRA_NOTE, note)
             }
     }
-
-
 }

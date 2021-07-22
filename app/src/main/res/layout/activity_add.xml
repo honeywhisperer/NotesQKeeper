@@ -22,15 +22,39 @@
         android:layout_marginBottom="8dp"
         android:hint="@string/note_description"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintBottom_toTopOf="@id/btnCancel"
         app:layout_constraintTop_toBottomOf="@id/etTitle" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toTopOf="@id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@id/etBody" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintTop_toBottomOf="@id/btnCancel" />
 
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save"
+        app:layout_constraintBottom_toTopOf="@id/btnUpdate"
+        app:layout_constraintTop_toBottomOf="@id/btnDelete" />
+
+    <Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/update"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etBody" />
+        app:layout_constraintTop_toBottomOf="@id/btnSave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
