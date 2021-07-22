@@ -48,7 +48,7 @@ class NotesAdapter(private val listener: OnNoteItemInteraction) :
             itemNoteBinding.tvTitle.text = note.note.title
             itemNoteBinding.tvBody.text = note.note.body
             itemNoteBinding.root.setBackgroundColor(
-                if (note.isSelected) Color.GRAY else Color.WHITE
+                if (note.isSelected) Color.GREEN else Color.YELLOW
             )
         }
     }

@@ -1,9 +1,8 @@
 package hr.trailovic.notesqkeeper.view.main
 
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.notesqkeeper.base.BaseActivity
 import hr.trailovic.notesqkeeper.databinding.ActivityMainBinding
@@ -25,7 +24,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         override fun onLongClick(note: NoteSelectable) {
             viewModelNotes.longClick(note)
         }
-
     })
 
     override fun getBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,7 +37,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun setBind() {
         viewModelNotes.notesLD.observe(this) {
             adapter.setItems(it)
-//            Toast.makeText(this, it.joinToString("\n"), Toast.LENGTH_SHORT).show()
         }
 
         viewModelNotes.addButtonVisible.observe(this) {
@@ -56,7 +53,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun setNotesList() {
-        binding.rvNotes.layoutManager = LinearLayoutManager(this)
+        binding.rvNotes.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.rvNotes.adapter = adapter
     }
 
